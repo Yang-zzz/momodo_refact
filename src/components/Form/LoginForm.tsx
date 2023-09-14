@@ -25,11 +25,8 @@ const LoginForm: React.FC = ({}) => {
 
   const loginMutation = useMutation(postUserLogin, {
     onSuccess(data) {
-      const { accessToken, refreshToken } = data;
-      setCookie([
-        { key: 'accessToken', value: accessToken },
-        { key: 'refreshToken', value: refreshToken },
-      ]);
+      const { refreshToken } = data;
+      setCookie([{ key: 'refreshToken', value: refreshToken }]);
       router.push('/mytodo');
     },
     onError(error) {

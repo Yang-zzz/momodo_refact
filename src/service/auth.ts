@@ -3,7 +3,6 @@ import { LoginInput } from '../app/login/page';
 import { InputValue } from '../components/Form/SignupForm';
 
 export const postSignup = async (formdata: InputValue) => {
-  console.log(formdata);
   const response = await instance.post('/api/v1/user-app', formdata);
   return response.data;
 };
