@@ -68,7 +68,6 @@ accessInstanceProfile.interceptors.request.use(
 
       if (response.accessToken) {
         const newAccessToken = response.accessToken;
-        console.log(newAccessToken);
         config.headers['Authorization'] = `Bearer ${newAccessToken}`;
         return config;
       } else {

@@ -20,7 +20,6 @@ export const getUserInfo = async () => {
   return response.data.data;
 };
 
-// any Type 수정필요
 export const putUserProfile = async (formdata: any) => {
   const response = await accessInstanceProfile.put(
     '/api/v1/user-app',
