@@ -6,7 +6,7 @@
 <br>
 
 >[`Product 웹 바로가기 👈🏻`](https://momodo.vercel.app/) <br>
->ID : Test    <br>
+>ID : TestYang1    <br>
 >PW : 123456  <br>
 
 ## 프로젝트 소개
