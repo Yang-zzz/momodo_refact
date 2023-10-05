@@ -7,7 +7,7 @@ export const postSignup = async (formdata: InputValue) => {
   return response.data;
 };
 
-export const postUserLogin = async (formdata: LoginInput) => {
+export const postUserLogin = async (formdata: any) => {
   const response = await instance.post(
     '/api/v1/authentication/token',
     formdata

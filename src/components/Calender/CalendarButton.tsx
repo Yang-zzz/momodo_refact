@@ -61,7 +61,7 @@ const CalendarButton: React.FC<Props> = ({
       )}
       <p className='z-20 text-sm'>{day.format('D')}</p>
       {isCurrentDate && isCurrentMonth && (
-        <span className='absolute top-[-6px] h-[6px] w-[6px] rounded-full bg-main-color'></span>
+        <span className='absolute top-[-6px] h-[5px] w-[5px] rounded-full bg-main-color'></span>
       )}
     </button>
   );

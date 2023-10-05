@@ -43,7 +43,7 @@ accessInstance.interceptors.request.use(
       }
     } catch (error) {
       // 갱신 요청 중 오류 발생 시 에러 처리
-      console.error('Failed to refresh accessToken:', error);
+      // console.error('Failed to refresh accessToken:', error);
       alert('엑세스 토큰 갱신 중 오류가 발생했습니다.');
       return Promise.reject('엑세스 토큰 갱신 중 오류가 발생했습니다.');
     }
@@ -77,7 +77,7 @@ accessInstanceProfile.interceptors.request.use(
       }
     } catch (error) {
       // 갱신 요청 중 오류 발생 시 에러 처리
-      console.error('Failed to refresh accessToken:', error);
+      // console.error('Failed to refresh accessToken:', error);
       alert('엑세스 토큰 갱신 중 오류가 발생했습니다.');
       return Promise.reject('엑세스 토큰 갱신 중 오류가 발생했습니다.');
     }
@@ -91,35 +91,19 @@ accessInstance.interceptors.response.use(
   (response) => {
     return response;
   },
-  async (error) => {
-    const newAccessToken = await refreshAccessToken();
+  async (error: any) => {
+    const {
+      config,
+      response: { status },
+    } = error;
+    if (status === 401) {
+      const token = await getCookie('refreshToken');
+      const originalRequest = config;
+      const newAccessToken = await putRefreshToken(token);
+      if (newAccessToken) {
+        originalRequest.headers.authorization = `Bearer ${newAccessToken}`;
+        return axios(originalRequest);
+      }
+    }
   }
 );
-
-export const refreshAccessToken = async () => {
-  const token = await getCookie('refreshToken');
-
-  if (!token) {
-    // TODO: 모달형태로 알림 제공하고 모달 내에서 로그인 페이지로 이동하는 버튼 제공하기
-    alert('다시 로그인해주세요.');
-    window.location.href = '/login';
-  }
-
-  try {
-    const response = await putRefreshToken(token);
-
-    if (response.accessToken) {
-      const newAccessToken = response.accessToken;
-      setCookie([
-        {
-          key: 'accessToken',
-          value: newAccessToken,
-        },
-      ]);
-      return newAccessToken;
-    }
-  } catch (error) {
-    console.error('Failed to refresh accessToken:', error);
-    return null;
-  }
-};

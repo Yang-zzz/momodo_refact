@@ -1,6 +1,4 @@
 'use client';
-// import { useAtom } from 'jotai';
-// import { kakaoAtom, userAtom } from '../../store/authStore';
 import React from 'react';
 import ProfileImg from './ProfileImg';
 
