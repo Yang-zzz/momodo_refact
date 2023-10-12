@@ -57,6 +57,10 @@ const LoginForm: React.FC = ({}) => {
       className='flex flex-col relative h-full w-full'
     >
       <h1 className='text-2xl text-center py-8'>로그인</h1>
+      <span className='ml-4'>
+        <p> 테스트용 ID : testYang1</p>
+        <p> 테스트용 PW : 123456</p>
+      </span>
       <Label htmlFor='userId' labelText='아이디'>
         <Input
           type='text'

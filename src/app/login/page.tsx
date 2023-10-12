@@ -8,9 +8,9 @@ export interface LoginInput {
 
 const Login = () => {
   return (
-    <div className='p-6 pb-16 flex flex-col justify-between h-screen w-full'>
+    <section className='p-6 pb-16 flex flex-col justify-between h-screen w-full'>
       <LoginForm />
-    </div>
+    </section>
   );
 };
 
