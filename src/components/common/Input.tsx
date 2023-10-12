@@ -7,6 +7,10 @@ interface InputProps {
   onBlur?(e: React.FocusEvent<HTMLInputElement>): void;
   onChange?(e: React.ChangeEvent<HTMLInputElement>): void;
 }
+interface LoginInput {
+  userId: string;
+  password: string;
+}
 
 const Input: React.FC<InputProps> = (props) => {
   return (

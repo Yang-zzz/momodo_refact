@@ -3,12 +3,11 @@ import { LoginInput } from '../app/login/page';
 import { InputValue } from '../components/Form/SignupForm';
 
 export const postSignup = async (formdata: InputValue) => {
-  console.log(formdata);
   const response = await instance.post('/api/v1/user-app', formdata);
   return response.data;
 };
 
-export const postUserLogin = async (formdata: LoginInput) => {
+export const postUserLogin = async (formdata: any) => {
   const response = await instance.post(
     '/api/v1/authentication/token',
     formdata
@@ -21,7 +20,6 @@ export const getUserInfo = async () => {
   return response.data.data;
 };
 
-// any Type 수정필요
 export const putUserProfile = async (formdata: any) => {
   const response = await accessInstanceProfile.put(
     '/api/v1/user-app',

@@ -1,5 +1,5 @@
-import { setCookie } from './../app/action';
 import axios from 'axios';
+import { setCookie } from './../app/action';
 import { getCookie } from '../app/action';
 import { putRefreshToken } from './auth';
 
@@ -21,14 +21,32 @@ export const accessInstanceProfile = axios.create({
 
 accessInstance.interceptors.request.use(
   async (config) => {
-    const accessToken = await getCookie('accessToken');
+    const refreshToken = await getCookie('refreshToken'); // 리프레시 토큰 가져오기
 
-    if (!accessToken) {
-      alert('다시 시도해주세요😊');
+    if (!refreshToken) {
+      // 사용자에게 로그인이 필요하다는 메시지 표시
+      alert('로그인이 필요합니다.');
+      return Promise.reject('로그인이 필요합니다.'); // 에러 처리를 위해 Promise.reject 사용
     }
 
-    config.headers['Authorization'] = `Bearer ${accessToken}`;
-    return config;
+    try {
+      const response = await putRefreshToken(refreshToken);
+
+      if (response.accessToken) {
+        const newAccessToken = response.accessToken;
+        config.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        return config;
+      } else {
+        // 엑세스 토큰 갱신에 실패한 경우에 대한 처리
+        alert('엑세스 토큰 갱신에 실패했습니다.');
+        return Promise.reject('엑세스 토큰 갱신에 실패했습니다.');
+      }
+    } catch (error) {
+      // 갱신 요청 중 오류 발생 시 에러 처리
+      // console.error('Failed to refresh accessToken:', error);
+      alert('엑세스 토큰 갱신 중 오류가 발생했습니다.');
+      return Promise.reject('엑세스 토큰 갱신 중 오류가 발생했습니다.');
+    }
   },
   (error) => {
     return Promise.reject(error);
@@ -37,14 +55,32 @@ accessInstance.interceptors.request.use(
 
 accessInstanceProfile.interceptors.request.use(
   async (config) => {
-    const accessToken = await getCookie('accessToken');
+    const refreshToken = await getCookie('refreshToken');
 
-    if (!accessToken) {
-      alert('다시 시도해주세요😊');
+    if (!refreshToken) {
+      // 사용자에게 로그인이 필요하다는 메시지 표시
+      alert('로그인이 필요합니다.');
+      return Promise.reject('로그인이 필요합니다.'); // 에러 처리를 위해 Promise.reject 사용
     }
 
-    config.headers['Authorization'] = `Bearer ${accessToken}`;
-    return config;
+    try {
+      const response = await putRefreshToken(refreshToken);
+
+      if (response.accessToken) {
+        const newAccessToken = response.accessToken;
+        config.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        return config;
+      } else {
+        // 엑세스 토큰 갱신에 실패한 경우에 대한 처리
+        alert('엑세스 토큰 갱신에 실패했습니다.');
+        return Promise.reject('엑세스 토큰 갱신에 실패했습니다.');
+      }
+    } catch (error) {
+      // 갱신 요청 중 오류 발생 시 에러 처리
+      // console.error('Failed to refresh accessToken:', error);
+      alert('엑세스 토큰 갱신 중 오류가 발생했습니다.');
+      return Promise.reject('엑세스 토큰 갱신 중 오류가 발생했습니다.');
+    }
   },
   (error) => {
     return Promise.reject(error);
@@ -55,35 +91,19 @@ accessInstance.interceptors.response.use(
   (response) => {
     return response;
   },
-  async (error) => {
-    const newAccessToken = await refreshAccessToken();
+  async (error: any) => {
+    const {
+      config,
+      response: { status },
+    } = error;
+    if (status === 401) {
+      const token = await getCookie('refreshToken');
+      const originalRequest = config;
+      const newAccessToken = await putRefreshToken(token);
+      if (newAccessToken) {
+        originalRequest.headers.authorization = `Bearer ${newAccessToken}`;
+        return axios(originalRequest);
+      }
+    }
   }
 );
-
-export const refreshAccessToken = async () => {
-  const token = await getCookie('refreshToken');
-
-  if (!token) {
-    // TODO: 모달형태로 알림 제공하고 모달 내에서 로그인 페이지로 이동하는 버튼 제공하기
-    alert('다시 로그인해주세요.');
-    window.location.href = '/login';
-  }
-
-  try {
-    const response = await putRefreshToken(token);
-
-    if (response.accessToken) {
-      const newAccessToken = response.accessToken;
-      setCookie([
-        {
-          key: 'accessToken',
-          value: newAccessToken,
-        },
-      ]);
-      return newAccessToken;
-    }
-  } catch (error) {
-    console.error('Failed to refresh accessToken:', error);
-    return null;
-  }
-};

@@ -35,12 +35,9 @@ const KakaoLogin = () => {
           localStorage.setItem('kakaoName', kakaoResponse.properties.nickname);
 
           const response = await sendKakaoToken(kakaoAccesstoken);
-          const { accessToken, refreshToken } = response;
+          const { refreshToken } = response;
 
-          setCookie([
-            { key: 'accessToken', value: accessToken },
-            { key: 'refreshToken', value: refreshToken },
-          ]);
+          setCookie([{ key: 'refreshToken', value: refreshToken }]);
           router.push('/mytodo');
         } catch (error) {
           console.log(error);

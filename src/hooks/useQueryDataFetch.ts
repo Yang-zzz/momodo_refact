@@ -5,7 +5,6 @@ import {
 } from '../utils/queryFns/todoListQueryFns';
 import { TodoData } from '../types/todolistType';
 
-// 커스텀 훅 1
 const useTodoListData = (selectedDate: string) => {
   return useQuery<TodoData[]>({
     queryKey: ['todolist', selectedDate],
@@ -14,7 +13,6 @@ const useTodoListData = (selectedDate: string) => {
   });
 };
 
-// 커스텀 훅 2
 const useHistoryData = (moveMonth: string) => {
   return useQuery({
     queryKey: ['todoHistory', moveMonth],
@@ -23,7 +21,7 @@ const useHistoryData = (moveMonth: string) => {
   });
 };
 
-// 하나로 통합된 커스텀 훅
+
 export const useCombinedDataFetch = (
   selectedDate: string,
   moveMonth: string

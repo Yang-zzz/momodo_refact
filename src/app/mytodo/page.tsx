@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import UserProfile from '../../components/UserProfile/UserProfile';
 import TabBar from '../../components/common/TabBar';
 import MainHeader from '../../components/header/MainHeader';

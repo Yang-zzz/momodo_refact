@@ -15,8 +15,9 @@ import InnerModal from '../Modal/InnerModal';
 interface Props {
   todoList: TodoData;
   isDueDatePassed: boolean;
+  selectedDate:string;
 }
-const Todo: React.FC<Props> = ({ todoList, isDueDatePassed }) => {
+const Todo: React.FC<Props> = ({ todoList, isDueDatePassed, selectedDate }) => {
   const { id, title, emoji, completed } = todoList;
   const [checked, setChecked] = useState(completed);
 
@@ -75,7 +76,7 @@ const Todo: React.FC<Props> = ({ todoList, isDueDatePassed }) => {
         </div>
       </li>
       {editModalOpen && (
-        <Modal id={id} type='edittodo' closeModal={closeEditModal} />
+        <Modal id={id} type='edittodo' closeModal={closeEditModal} selectedDate={selectedDate} />
       )}
       {deleteModalOpen && (
         <InnerModal type={'deleteTodo'} id={id} closeModal={closeDeleteModal} />

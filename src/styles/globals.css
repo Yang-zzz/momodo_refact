@@ -106,3 +106,16 @@ ul {
   object-fit: contain;
   border: 1px solid #7a7878;
 }
+
+@keyframes slideIn {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animated-open {
+  animation: slideIn 1s ease-in-out;
+}
