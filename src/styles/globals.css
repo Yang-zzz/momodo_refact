@@ -116,6 +116,6 @@ ul {
   }
 }
 
-.animated-element {
+.animated-open {
   animation: slideIn 1s ease-in-out;
 }

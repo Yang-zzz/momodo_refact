@@ -82,7 +82,14 @@ const TodoList: React.FC<Props> = ({ todoListData, selectedDate }) => {
           </ul>
         )}
       </div>
-      {modalOpen && <Modal type='newtodo' closeModal={closeModal} id={0} selectedDate={selectedDate} />}
+      {modalOpen && (
+        <Modal
+          type='newtodo'
+          closeModal={closeModal}
+          id={0}
+          selectedDate={selectedDate}
+        />
+      )}
     </section>
   );
 };
