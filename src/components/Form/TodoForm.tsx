@@ -4,13 +4,16 @@ import close from '../../../public/images/closeIcon.svg';
 import Image from 'next/image';
 import Button from '../button/Button';
 import TodoEmoji from '../Todo/TodoEmoji';
-import moment from 'moment';
-import React, { useState, useEffect } from 'react';
+import {
+  selectDayOfWeek,
+  selectWeek,
+  daysOfWeek,
+} from '../../constants/constant';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import {
   modifyTodoData,
   postTodoData,
-  deleteTodoData,
   getIdTodoData,
 } from '../../service/todo';
 import { useQueryClient } from '@tanstack/react-query';
@@ -45,7 +48,6 @@ const TodoForm: React.FC<TodoFormProps> = ({
   selectedDate,
 }) => {
   // State
-  //TODO: 실제 유저가 선택한 날짜와 연결해주기
   const [todoValue, setTodoValue] = useState('');
   const [todoEmoji, setTodoEmoji] = useState('🎉');
   const [repeatDays, setRepeatDays] = useState('');
@@ -65,74 +67,40 @@ const TodoForm: React.FC<TodoFormProps> = ({
     }
   }, [type]);
 
-  // Constants
-  const curretDate = moment().format('YYYY-MM-DD');
-  console.log("re-rendering");
-  const selectDayOfWeek = [
-    { value: '1', name: '월요일 마다' },
-    { value: '2', name: '화요일 마다' },
-    { value: '3', name: '수요일 마다' },
-    { value: '4', name: '목요일 마다' },
-    { value: '5', name: '금요일 마다' },
-    { value: '6', name: '토요일 마다' },
-    { value: '7', name: '일요일 마다' },
-  ];
-  const selectWeek = [
-    { value: '0', name: '안 함' },
-    { value: '7', name: '1주' },
-    { value: '14', name: '2주' },
-    { value: '21', name: '3주' },
-    { value: '28', name: '4주' },
-  ];
-  const daysOfWeek = ['없음', '월', '화', '수', '목', '금', '토', '일'];
-
   // Event Handlers
+
   const handleTodoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTodoValue(e.target.value);
+    const value = e.target.value;
+    setTodoValue(value);
   };
 
-  const handleRepeatDay = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = e.target.value;
-    if (selectedValue === '안 함') {
-      setRepeatDays('');
-    } else if (repeatDays.includes(selectedValue)) {
-      const updatedDays = repeatDays.replace(selectedValue, '');
-      setRepeatDays(updatedDays);
-    } else {
-      setRepeatDays((prevRepeatDays) => prevRepeatDays + selectedValue);
-    }
-  };
-
-  const handleDuration = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = e.target.value;
-    if (selectedValue === '안 함') {
-      setDuration('');
-    } else {
-      setDuration(selectedValue);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const todoData: TodoData = {
-      title: todoValue,
-      emoji: todoEmoji,
-      dueDate: selectedDate,
-      repeatDays: repeatDays,
-      duration: duration,
-    };
-    try {
-      if (type === 'newtodo') {
-        await addMutation.mutateAsync(todoData);
-        setTodoValue('');
-      } else if (type === 'edittodo') {
-        await ModifyMutation.mutateAsync();
-        setTodoValue('');
+  const handleRepeatDay = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const selectedValue = e.target.value;
+      if (selectedValue === '안 함') {
+        setRepeatDays('');
+      } else if (repeatDays.includes(selectedValue)) {
+        const updatedDays = repeatDays.replace(selectedValue, '');
+        setRepeatDays(updatedDays);
+      } else {
+        setRepeatDays((prevRepeatDays) => prevRepeatDays + selectedValue);
       }
-    } catch (error) {
-      console.log('투두 추가 에러' + error);
-    }
-  };
+    },
+    [repeatDays]
+  );
+
+  const handleDuration = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const selectedValue = e.target.value;
+      console.log('handleDuration');
+      if (selectedValue === '안 함') {
+        setDuration('');
+      } else {
+        setDuration(selectedValue);
+      }
+    },
+    [duration]
+  );
 
   const addMutation = useMutation(postTodoData, {
     onSuccess: () => {
@@ -151,6 +119,39 @@ const TodoForm: React.FC<TodoFormProps> = ({
       queryClient.invalidateQueries({ queryKey: ['todolist'] });
     },
   });
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const todoData: TodoData = {
+        title: todoValue,
+        emoji: todoEmoji,
+        dueDate: selectedDate,
+        repeatDays: repeatDays,
+        duration: duration,
+      };
+      try {
+        if (type === 'newtodo') {
+          await addMutation.mutateAsync(todoData);
+          setTodoValue('');
+        } else if (type === 'edittodo') {
+          await ModifyMutation.mutateAsync();
+          setTodoValue('');
+        }
+      } catch (error) {
+        console.log('투두 추가 에러' + error);
+      }
+    },
+    [
+      todoValue,
+      todoEmoji,
+      selectedDate,
+      repeatDays,
+      duration,
+      type,
+      addMutation,
+      ModifyMutation,
+    ]
+  );
 
   return (
     <article>
