@@ -19,6 +19,7 @@ interface TodoFormProps {
   type: string;
   closeModal(): void;
   id: number;
+  selectedDate: string;
 }
 
 export interface TodoData {
@@ -37,7 +38,12 @@ export interface ModifyTodo {
   duration?: string;
 }
 
-const TodoForm: React.FC<TodoFormProps> = ({ type, closeModal, id }) => {
+const TodoForm: React.FC<TodoFormProps> = ({
+  type,
+  closeModal,
+  id,
+  selectedDate,
+}) => {
   // State
   //TODO: 실제 유저가 선택한 날짜와 연결해주기
   const [todoValue, setTodoValue] = useState('');
@@ -61,7 +67,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ type, closeModal, id }) => {
 
   // Constants
   const curretDate = moment().format('YYYY-MM-DD');
-  // const curretDate = moment().format('2023-08-01');
+  console.log("re-rendering");
   const selectDayOfWeek = [
     { value: '1', name: '월요일 마다' },
     { value: '2', name: '화요일 마다' },
@@ -84,6 +90,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ type, closeModal, id }) => {
   const handleTodoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTodoValue(e.target.value);
   };
+
   const handleRepeatDay = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
     if (selectedValue === '안 함') {
@@ -110,7 +117,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ type, closeModal, id }) => {
     const todoData: TodoData = {
       title: todoValue,
       emoji: todoEmoji,
-      dueDate: curretDate,
+      dueDate: selectedDate,
       repeatDays: repeatDays,
       duration: duration,
     };
@@ -126,6 +133,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ type, closeModal, id }) => {
       console.log('투두 추가 에러' + error);
     }
   };
+
   const addMutation = useMutation(postTodoData, {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['todolist'] });
