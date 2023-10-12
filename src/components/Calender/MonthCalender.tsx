@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import moment from 'moment';
 import leftArrow from '../../../public/images/left-arrow.svg';
 import rightArrow from '../../../public/images/right-arrow.svg';
@@ -40,7 +40,7 @@ const MonthCalendar: React.FC<Props> = ({ today, yearMonth }) => {
   };
 
   // 현재 월의 캘린더 데이터를 생성하는 함수
-  const calendarData = generateCalendarData(currentMonth);
+  const calendarData = useMemo(()=> generateCalendarData(currentMonth),[currentMonth]);
 
   // 클릭한 날짜 추출 (day type 수정 필요)
   const selectDate = (day: any) => {

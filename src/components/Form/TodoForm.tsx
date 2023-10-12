@@ -133,6 +133,7 @@ const TodoForm: React.FC<TodoFormProps> = ({
         if (type === 'newtodo') {
           await addMutation.mutateAsync(todoData);
           setTodoValue('');
+          closeModal()
         } else if (type === 'edittodo') {
           await ModifyMutation.mutateAsync();
           setTodoValue('');
