@@ -5,7 +5,7 @@
 - [구현 기능](#구현-기능)
 <br>
 
->[`Product 웹 바로가기 👈🏻`](https://momodo.vercel.app/) <br>
+>[`Product 웹 바로가기 👈🏻`](https://momodo-kappa.vercel.app/) <br>
 >ID : TestYang1    <br>
 >PW : 123456  <br>
 
